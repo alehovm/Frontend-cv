@@ -20,7 +20,6 @@ AWS.config.update({ region: process.env.AWS_REGION })
 const s3 = new AWS.S3()
 
 // Change this value to adjust the signed URL's expiration
-const URL_EXPIRATION_SECONDS = 300
 
 // Main Lambda entry point
 exports.handler = async (event) => {
@@ -35,7 +34,6 @@ const getUploadURL = async function(event) {
   const s3Params = {
     Bucket: process.env.UploadBucket,
     Key,
-    Expires: URL_EXPIRATION_SECONDS,
     ContentType: 'video',
     ACL: 'public-read',
     
