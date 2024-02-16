@@ -36,7 +36,7 @@ const getUploadURL = async function(event) {
     Bucket: process.env.UploadBucket,
     Key,
     Expires: URL_EXPIRATION_SECONDS,
-    ContentType: 'video/mpeg',
+    ContentType: 'video',
     ACL: 'public-read',
     
     // This ACL makes the uploaded object publicly readable. You must also uncomment
