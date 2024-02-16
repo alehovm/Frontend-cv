@@ -37,7 +37,7 @@ const getUploadURL = async function(event) {
     Key,
     Expires: URL_EXPIRATION_SECONDS,
     ContentType: 'video/mpeg',
-    //ACL: 'public-read',
+    ACL: 'public-read',
     
     // This ACL makes the uploaded object publicly readable. You must also uncomment
     // the extra permission for the Lambda function in the SAM template. s
