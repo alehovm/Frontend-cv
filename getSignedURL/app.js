@@ -29,7 +29,7 @@ exports.handler = async (event) => {
 
 const getUploadURL = async function(event) {
   const randomID = parseInt(Math.random() * 10000000)
-  const Key = `${randomID}-video.mp4`
+  const Key = `${randomID}.mp4`
 
   // Get signed URL from S3
   const s3Params = {
@@ -37,7 +37,7 @@ const getUploadURL = async function(event) {
     Key,
     Expires: URL_EXPIRATION_SECONDS,
     ContentType: 'video/mp4',
-    ACL: 'public-read',
+    //ACL: 'public-read',
     
     // This ACL makes the uploaded object publicly readable. You must also uncomment
     // the extra permission for the Lambda function in the SAM template. s
