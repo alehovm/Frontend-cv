@@ -13,41 +13,97 @@
   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-'use strict'
+// 'use strict'
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
-const s3 = new AWS.S3()
+// const AWS = require('aws-sdk')
+// AWS.config.update({ region: process.env.AWS_REGION })
+// const s3 = new AWS.S3()
 
-// Change this value to adjust the signed URL's expiration
+// // Change this value to adjust the signed URL's expiration
 
-// Main Lambda entry point
-exports.handler = async (event) => {
-  return await getUploadURL(event)
-}
+// // Main Lambda entry point
+// exports.handler = async (event) => {
+//   return await getUploadURL(event)
+// }
 
-const getUploadURL = async function(event) {
-  const randomID = parseInt(Math.random() * 10000000)
-  const Key = `${randomID}.mp4`
+// const getUploadURL = async function(event) {
+//   const randomID = parseInt(Math.random() * 10000000)
+//   const Key = `${randomID}.mp4`
 
-  // Get signed URL from S3
-  const s3Params = {
-    Bucket: process.env.UploadBucket,
-    Key,
-    ContentType: 'video/*',
-    ACL: 'public-read',
+//   // Get signed URL from S3
+//   const s3Params = {
+//     Bucket: process.env.UploadBucket,
+//     Key,
+//     ContentType: 'video/*',
+//     ACL: 'public-read',
     
-    // This ACL makes the uploaded object publicly readable. You must also uncomment
-    // the extra permission for the Lambda function in the SAM template. s
+//     // This ACL makes the uploaded object publicly readable. You must also uncomment
+//     // the extra permission for the Lambda function in the SAM template. s
 
   
-  }
+//   }
 
-  console.log('Params: ', s3Params)
-  const uploadURL = await s3.getSignedUrlPromise('putObject', s3Params)
+//   console.log('Params: ', s3Params)
+//   const uploadURL = await s3.getSignedUrlPromise('putObject', s3Params)
 
-  return JSON.stringify({
-    uploadURL: uploadURL,
-    Key
-  })
+//   return JSON.stringify({
+//     uploadURL: uploadURL,
+//     Key
+//   })
+// }
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
+const URL_EXPIRATION_SECONDS = 300;
+
+exports.handler = async (event) => {
+    return await getUploadUrl(event);
+};
+
+async function getUploadUrl(event) {
+    const randomId = Math.floor(Math.random() * 10000000).toString();
+    const key = `${randomId}-video.mp4`;
+
+    // Get signed URL from S3
+    const uploadBucket = process.env.UploadBucket;
+    const params = {
+        Bucket: uploadBucket,
+        Key: key,
+        Fields: {
+            acl: 'public-read'
+        },
+        Conditions: [
+            {'acl': 'public-read'}
+        ],
+        Expires: URL_EXPIRATION_SECONDS
+    };
+
+    let uploadURL;
+    try {
+        uploadURL = await s3.createPresignedPost(params);
+    } catch (err) {
+        console.log('Error generating presigned URL', err);
+        return {
+            statusCode: 500,
+            headers: {
+                "content-type": "application/json; charset=utf-8"
+            },
+            body: JSON.stringify({ error: "Error generating presigned URL" })
+        };
+    }
+
+    const objectURL = `https://${uploadBucket}.s3.eu-north-1.amazonaws.com/${key}`;
+    
+    const responseBody = JSON.stringify({
+        uploadURL: uploadURL,
+        Key: key,
+        objectURL: objectURL
+    });
+
+    return {
+        statusCode: 200,
+        headers: {
+            "content-type": "application/json; charset=utf-8"
+        },
+        body: responseBody
+    };
 }
