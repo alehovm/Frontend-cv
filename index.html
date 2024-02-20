@@ -63,10 +63,7 @@
             try {
               const response = await axios.get(API_ENDPOINT);
               console.log('Full Response: ', response);
-            } catch (error) {
-              console.error('Axios Error: ', error);
-              return;
-            }
+            
               
               // Check if the response data has the expected structure
               // if (!response.data || !response.data.uploadURL || !response.data.uploadURL.url) {
@@ -104,9 +101,11 @@
               } else {
                 console.error('Upload failed:', result);
               }
-            // } catch (error) {
-            //   console.error('Error during upload:', error);
-            // }
+              
+              } catch (error) {
+                console.error('Axios Error: ', error);
+                return;
+              }
           }
 
         }
