@@ -56,54 +56,41 @@ const s3 = new AWS.S3();
 const URL_EXPIRATION_SECONDS = 300;
 
 exports.handler = async (event) => {
-    return await getUploadUrl(event);
+    return await getUploadUrl();
 };
 
-async function getUploadUrl(event) {
+async function getUploadUrl() {
     const randomId = Math.floor(Math.random() * 10000000).toString();
     const key = `${randomId}-video.mp4`;
 
-    // Get signed URL from S3
     const uploadBucket = process.env.UploadBucket;
     const params = {
         Bucket: uploadBucket,
         Key: key,
-        Fields: {
-            acl: 'public-read'
-        },
-        Conditions: [
-            {'acl': 'public-read'}
-        ],
-        Expires: URL_EXPIRATION_SECONDS
+        Expires: URL_EXPIRATION_SECONDS,
+        ContentType: 'video/mp4', // Specify if you want to enforce this content type
+        ACL: 'public-read' // Only if you need the uploaded object to be publicly readable
     };
 
-    let uploadURL;
     try {
-        uploadURL = await s3.createPresignedPost(params);
-    } catch (err) {
-        console.log('Error generating presigned URL', err);
+        const uploadURL = await s3.getSignedUrlPromise('putObject', params);
+        const objectURL = `https://${uploadBucket}.s3.amazonaws.com/${key}`;
+        
         return {
-            statusCode: 500,
+            statusCode: 200,
             headers: {
                 "content-type": "application/json; charset=utf-8"
             },
-            body: JSON.stringify({ error: "Error generating presigned URL" })
+            body: JSON.stringify({
+                uploadURL: uploadURL,
+                objectURL: objectURL
+            })
+        };
+    } catch (err) {
+        console.log('Error generating signed URL', err);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Error generating signed URL" })
         };
     }
-
-    const objectURL = `https://${uploadBucket}.s3.eu-north-1.amazonaws.com/${key}`;
-    
-    const responseBody = JSON.stringify({
-        uploadURL: uploadURL,
-        Key: key,
-        objectURL: objectURL
-    });
-
-    return {
-        statusCode: 200,
-        headers: {
-            "content-type": "application/json; charset=utf-8"
-        },
-        body: responseBody
-    };
 }
