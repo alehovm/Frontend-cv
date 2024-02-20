@@ -61,31 +61,31 @@
             console.log('Upload clicked');
             try {
               const response = await axios.get(API_ENDPOINT);
-              console.log('Response: ', response.data); // Corrected to access .data
-              const uploadURL = response.data.uploadURL; // Correct extraction of the upload URL
+              if(response.data && response.data.uploadURL) {
+                console.log('Uploading to: ', response.data.uploadURL);
+                let binary = atob(this.media.split(',')[1]);
+                let array = [];
+                for (var i = 0; i < binary.length; i++) {
+                  array.push(binary.charCodeAt(i));
+                }
+                let blobData = new Blob([new Uint8Array(array)], {type: 'video/mp4'});
+                
+                const result = await fetch(response.data.uploadURL, {
+                  method: 'PUT',
+                  body: blobData,
+                  headers: {
+                    'Content-Type': 'video/mp4'
+                  },
+                });
           
-              console.log('Uploading: ', this.media);
-              let binary = atob(this.media.split(',')[1]);
-              let array = [];
-              for (var i = 0; i < binary.length; i++) {
-                array.push(binary.charCodeAt(i));
-              }
-              let blobData = new Blob([new Uint8Array(array)], {type: 'video/mp4'}); // Correct MIME type
-          
-              console.log('Uploading to: ', uploadURL);
-              const result = await fetch(uploadURL, {
-                method: 'PUT',
-                body: blobData,
-                headers: {
-                  'Content-Type': 'video/mp4' // Explicitly setting the Content-Type
-                },
-              });
-          
-              if (result.ok) {
-                console.log('Upload successful');
-                this.uploadURL = response.data.objectURL; // Assuming you want to show or use the object URL
+                if (result.ok) {
+                  console.log('Upload successful');
+                  this.uploadURL = response.data.objectURL;
+                } else {
+                  console.error('Upload failed', await result.text());
+                }
               } else {
-                console.error('Upload failed', result);
+                console.error('Invalid response received', response);
               }
             } catch (error) {
               console.error('Error during upload', error);
