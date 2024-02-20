@@ -58,27 +58,51 @@
             this.media = ''
           },
           async uploadMedia() {
-            console.log('Upload clicked')
-            const response = await axios({
-              method: 'GET',
-              url: API_ENDPOINT
-            })
-            console.log('Response: ', response)
-            console.log('Uploading: ', this.media)
-            let binary = atob(this.media.split(',')[1])
-            let array = []
-            for (var i = 0; i < binary.length; i++) {
-              array.push(binary.charCodeAt(i))
+            console.log('Upload clicked');
+            try {
+              const response = await axios.get(API_ENDPOINT);
+              console.log('Response:', response.data);
+              const presignedData = response.data.uploadURL;
+          
+              // Convert base64/URLEncoded data component to raw binary data held in a string
+              let binary = atob(this.media.split(',')[1]);
+              let array = [];
+              for (let i = 0; i < binary.length; i++) {
+                array.push(binary.charCodeAt(i));
+              }
+              let blobData = new Blob([new Uint8Array(array)], {type: 'video/mp4'});
+          
+              // Create a new FormData instance
+              var formData = new FormData();
+              // Add the form fields received from the presigned POST URL
+              for (var field in presignedData.fields) {
+                formData.append(field, presignedData.fields[field]);
+              }
+              // Append the file blob to the form data
+              formData.append('file', blobData);
+          
+              // Post the video to the S3 presigned POST URL
+              const result = await axios({
+                method: 'post',
+                url: presignedData.url,
+                data: formData,
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
+          
+              console.log('Result:', result);
+              if (result.status === 204 || result.status === 200) { // S3 should return 204 No Content or 200 OK
+                console.log('Upload successful');
+                this.uploadURL = presignedData.url; // Use the URL for the uploaded video
+              } else {
+                console.error('Upload failed', result);
+              }
+            } catch (error) {
+              console.error('Error during upload:', error);
             }
-            let blobData = new Blob([new Uint8Array(array)], {type: 'video'})
-            console.log('Uploading to: ', response.uploadURL)
-            const result = await fetch(response.uploadURL, {
-              method: 'PUT',
-              body: blobData
-            })
-            console.log('Result: ', result)
-            this.uploadURL = response.uploadURL.split('?')[0]
           }
+
         }
       })
     </script>
