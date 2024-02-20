@@ -57,6 +57,7 @@
             console.log('Remove clicked')
             this.media = ''
           },
+          
           async uploadMedia() {
             console.log('Upload clicked');
             try {
@@ -64,7 +65,7 @@
               console.log('Response: ', response.data);
               
               // Check if the response data has the expected structure
-              if (!response.data || !response.data.url) {
+              if (!response.data || !response.data.uploadURL || !response.data.uploadURL.url) {
                 console.error('Invalid upload URL received from the backend', response);
                 return;
               }
