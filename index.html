@@ -58,27 +58,51 @@
             this.media = ''
           },
           async uploadMedia() {
-            console.log('Upload clicked')
-            const response = await axios({
-              method: 'GET',
-              url: API_ENDPOINT
-            })
-            console.log('Response: ', response)
-            console.log('Uploading: ', this.media)
-            let binary = atob(this.media.split(',')[1])
-            let array = []
-            for (var i = 0; i < binary.length; i++) {
-              array.push(binary.charCodeAt(i))
+            console.log('Upload clicked');
+            try {
+              const response = await axios.get(API_ENDPOINT);
+              console.log('Response: ', response.data);
+              
+              // Check if the response data has the expected structure
+              if (!response.data || !response.data.uploadURL || !response.data.uploadURL.url) {
+                console.error('Invalid upload URL received from the backend', response);
+                return;
+              }
+          
+              // Extract the presigned URL data
+              const { url, fields } = response.data.uploadURL;
+          
+              // Create a new FormData instance
+              var formData = new FormData();
+              // Add the form fields received from the presigned POST URL
+              Object.keys(fields).forEach(key => {
+                formData.append(key, fields[key]);
+              });
+          
+              // Convert the base64 string to a Blob and append the file to the form data
+              let binaryString = atob(this.media.split(',')[1]);
+              let binaryLen = binaryString.length;
+              let bytes = new Uint8Array(binaryLen);
+              for (let i = 0; i < binaryLen; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+              }
+              formData.append('file', new Blob([bytes], {type: 'video/mp4'}));
+          
+              // Post the form data to the S3 presigned POST URL
+              const result = await axios.post(url, formData);
+          
+              console.log('Upload result:', result);
+              if (result.status === 204 || result.status === 200) { // S3 should return 204 No Content or 200 OK
+                console.log('Upload successful');
+                this.uploadURL = response.data.objectURL;
+              } else {
+                console.error('Upload failed:', result);
+              }
+            } catch (error) {
+              console.error('Error during upload:', error);
             }
-            let blobData = new Blob([new Uint8Array(array)], {type: 'video'})
-            console.log('Uploading to: ', response.uploadURL)
-            const result = await fetch(response.uploadURL, {
-              method: 'PUT',
-              body: blobData
-            })
-            console.log('Result: ', result)
-            this.uploadURL = response.uploadURL.split('?')[0]
           }
+
         }
       })
     </script>

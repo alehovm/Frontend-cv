@@ -1,3 +1,4 @@
+# Backend (Lambda function)
 import boto3
 import json
 import random
@@ -6,7 +7,6 @@ import os
 # Change this value to adjust the signed URL's expiration
 URL_EXPIRATION_SECONDS = 300
 
-# Main Lambda entry point
 def lambda_handler(event, context):
     return get_upload_url(event)
 
@@ -15,9 +15,8 @@ def get_upload_url(event):
     random_id = str(random.randint(1, 10000000))
     key = f"{random_id}-video.mp4"
 
-    # Get signed URL from S3
     try:
-        upload_url = s3.generate_presigned_post(Bucket=os.environ['s3uploader-s3uploadbucket-9ngg7y4siwyp'],
+        upload_url = s3.generate_presigned_post(Bucket=os.environ['UploadBucket'],
                                                 Key=key,
                                                 Fields={'acl': 'public-read'},
                                                 Conditions=[{'acl': 'public-read'}],
@@ -29,9 +28,9 @@ def get_upload_url(event):
             'body': json.dumps('Error generating presigned URL')
         }
 
-    objectURL = f"https://{os.environ['s3uploader-s3uploadbucket-9ngg7y4siwyp']}.s3.amazonaws.com/{key}"
+    objectURL = f"https://{os.environ['UploadBucket']}.s3.amazonaws.com/{key}"
     
-    # Generate the response object
+    # Note that responseBody is a dict, not a string
     responseBody = {
         'uploadURL': {
             'url': upload_url['url'],
@@ -41,6 +40,7 @@ def get_upload_url(event):
         'objectURL': objectURL
     }
 
+    # The entire responseBody is JSON stringified, not just the upload_url
     return {
         "statusCode": 200,
         "headers": {
