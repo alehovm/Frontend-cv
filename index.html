@@ -58,45 +58,26 @@
             this.media = ''
           },
           async uploadMedia() {
-            console.log('Upload clicked');
-            try {
-              const response = await axios.get(API_ENDPOINT);
-              console.log('Response: ', response.data);
-              if (!response.data || !response.data.uploadURL) {
-                console.error('Invalid upload URL received from the backend');
-                return;
-              }
-              // Destructure the response data for easier access
-              const { url, fields } = response.data.uploadURL;
-              const formData = new FormData();
-          
-              // Add the presigned post fields to the form data
-              Object.entries(fields).forEach(([key, value]) => {
-                formData.append(key, value);
-              });
-          
-              // Convert the base64 string to a Blob and append the file to the form data
-              let binaryString = atob(this.media.split(',')[1]);
-              let binaryLen = binaryString.length;
-              let bytes = new Uint8Array(binaryLen);
-              for (let i = 0; i < binaryLen; i++) {
-                 bytes[i] = binaryString.charCodeAt(i);
-              }
-              formData.append('file', new Blob([bytes], {type: 'video/mp4'}));
-          
-              // Post the form data to the S3 presigned URL
-              const result = await axios.post(url, formData);
-          
-              console.log('Upload result:', result);
-              if (result.status === 204 || result.status === 200) {
-                console.log('Upload successful');
-                this.uploadURL = response.data.objectURL;
-              } else {
-                console.error('Upload failed:', result);
-              }
-            } catch (error) {
-              console.error('Error during upload:', error);
+            console.log('Upload clicked')
+            const response = await axios({
+              method: 'GET',
+              url: API_ENDPOINT
+            })
+            console.log('Response: ', response)
+            console.log('Uploading: ', this.media)
+            let binary = atob(this.media.split(',')[1])
+            let array = []
+            for (var i = 0; i < binary.length; i++) {
+              array.push(binary.charCodeAt(i))
             }
+            let blobData = new Blob([new Uint8Array(array)], {type: 'video'})
+            console.log('Uploading to: ', response.uploadURL)
+            const result = await fetch(response.uploadURL, {
+              method: 'PUT',
+              body: blobData
+            })
+            console.log('Result: ', result)
+            this.uploadURL = response.uploadURL.split('?')[0]
           }
         }
       })
