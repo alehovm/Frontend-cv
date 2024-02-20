@@ -17,7 +17,7 @@ def get_upload_url(event):
 
     # Get signed URL from S3
     try:
-        upload_url = s3.generate_presigned_post(Bucket=os.environ['UploadBucket'],
+        upload_url = s3.generate_presigned_post(Bucket=os.environ['s3uploader-s3uploadbucket-9ngg7y4siwyp'],
                                                 Key=key,
                                                 Fields={'acl': 'public-read'},
                                                 Conditions=[{'acl': 'public-read'}],
@@ -29,7 +29,7 @@ def get_upload_url(event):
             'body': json.dumps('Error generating presigned URL')
         }
 
-    objectURL = f"https://{os.environ['UploadBucket']}.s3.amazonaws.com/{key}"
+    objectURL = f"https://{os.environ['s3uploader-s3uploadbucket-9ngg7y4siwyp']}.s3.amazonaws.com/{key}"
     
     # Generate the response object
     responseBody = {
