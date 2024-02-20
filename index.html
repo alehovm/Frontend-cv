@@ -62,7 +62,11 @@
             console.log('Upload clicked');
             try {
               const response = await axios.get(API_ENDPOINT);
-              console.log('Response: ', response.data);
+              console.log('Full Response: ', response);
+            } catch (error) {
+              console.error('Axios Error: ', error);
+              return;
+            }
               
               // Check if the response data has the expected structure
               // if (!response.data || !response.data.uploadURL || !response.data.uploadURL.url) {
