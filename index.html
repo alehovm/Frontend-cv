@@ -62,6 +62,8 @@
             try {
               // Call the backend to get the pre-signed URL and fields
               const presignedResponse = await axios.get(API_ENDPOINT);
+              const data = JSON.parse(presignedResponse.data); // Use JSON.parse here if needed
+              console.log(data);  
               console.log('Presigned Response data: ', presignedResponse.data);
               console.log('Presigned Response: ', presignedResponse);
               console.log('Presigned Response data uploadUrl: ', presignedResponse.data.uploadURL);
