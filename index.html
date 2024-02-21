@@ -100,8 +100,15 @@
                 console.error('Upload failed:', uploadResult);
               }
             } catch (error) {
-              console.error('Error during upload:', error);
-            }
+                console.error('Error during upload:', error);
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  console.error(error.response.data);
+                  console.error(error.response.status);
+                  console.error(error.response.headers);
+                }
+              }
           }
 
         }
