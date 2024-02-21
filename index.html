@@ -61,9 +61,10 @@
           async uploadMedia() {
             console.log('Upload clicked');
             try {
+              // Get the presigned POST data from the backend
               const response = await axios.get(API_ENDPOINT);
               console.log('Response: ', response.data);
-              
+          
               // Check if the response data has the expected structure
               if (!response.data || !response.data.uploadURL || !response.data.uploadURL.url) {
                 console.error('Invalid upload URL received from the backend', response);
@@ -90,12 +91,16 @@
               formData.append('file', new Blob([bytes], {type: 'video/mp4'}));
           
               // Post the form data to the S3 presigned POST URL
-              const result = await axios.post(url, formData);
+              const result = await axios.post(url, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
           
               console.log('Upload result:', result);
-              if (result.status === 204 || result.status === 200) { // S3 should return 204 No Content or 200 OK
+              if (result.status === 204 || result.status === 200) {
                 console.log('Upload successful');
-                this.uploadURL = response.data.objectURL;
+                this.uploadURL = response.data.objectURL; // Ensure this URL is returned by the backend
               } else {
                 console.error('Upload failed:', result);
               }
@@ -103,7 +108,6 @@
               console.error('Error during upload:', error);
             }
           }
-
         }
       })
     </script>
