@@ -62,25 +62,23 @@
           async uploadMedia() {
             console.log('Upload clicked');
             try {
-              // Call the backend to get the pre-signed URL and fields
               const presignedResponse = await axios.get(API_ENDPOINT);
               console.log('Presigned Response: ', presignedResponse.data);
               
-              // Check if the presignedResponse has the expected properties
-              if (!presignedResponse.data || !presignedResponse.data.uploadURL || !presignedResponse.data.uploadURL.url) {
+              if (!presignedResponse.data || !presignedResponse.data.url || !presignedResponse.data.fields) {
                 console.error('Invalid response received from the backend', presignedResponse);
                 return;
               }
           
-              const { url, fields } = presignedResponse.data.uploadURL;
+              const { url, fields } = presignedResponse.data;
               const formData = new FormData();
           
-              // Append the fields to the form data
               Object.entries(fields).forEach(([key, value]) => {
-                formData.append(key, value);
+                if (key !== 'acl') { // Do not append 'acl' if the bucket does not allow it
+                  formData.append(key, value);
+                }
               });
           
-              // Append the file (blob) to the form data
               let binary = atob(this.media.split(',')[1]);
               let array = [];
               for (let i = 0; i < binary.length; i++) {
@@ -89,12 +87,9 @@
               let blobData = new Blob([new Uint8Array(array)], { type: 'video/mp4' });
               formData.append('file', blobData);
           
-              // Use the pre-signed URL to upload the video file
               const uploadResult = await axios.post(url, formData);
           
               console.log('Upload Result: ', uploadResult);
-              
-              // If the upload is successful, store the URL of the uploaded object
               if (uploadResult.status === 200 || uploadResult.status === 204) {
                 this.uploadURL = presignedResponse.data.objectURL;
                 console.log('Upload successful. Object URL:', this.uploadURL);
