@@ -82,6 +82,8 @@
                 bytes[i] = binaryString.charCodeAt(i);
               }
               formData.append('file', new Blob([bytes], {type: 'video/mp4'}));
+              
+              console.log('Format data: ', formData);
           
               const result = await axios.post(url, formData); // No headers needed, axios sets them for FormData.
           
