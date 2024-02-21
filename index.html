@@ -65,7 +65,7 @@
               console.log('Response: ', response.data);
           
               if (!response.data || !response.data.uploadURL || !response.data.uploadURL.url) {
-                console.error('Invalid upload URL received from the backend', response);
+                console.log('Invalid upload URL received from the backend', response);
                 return;
               }
           
