@@ -57,42 +57,51 @@
             console.log('Remove clicked')
             this.media = ''
           },
-          
           async uploadMedia() {
             console.log('Upload clicked');
             try {
-              const response = await axios.get(API_ENDPOINT);
-              console.log('Response: ', response.data);
-          
-              if (!response.data || !response.data.uploadURL || !response.data.uploadURL.url) {
-                console.log('Invalid upload URL received from the backend', response);
+              // Call the backend to get the pre-signed URL and fields
+              const presignedResponse = await axios.get(API_ENDPOINT);
+              console.log('Presigned Response: ', presignedResponse.data);
+              
+              // Check if the presignedResponse has the expected properties
+              if (!presignedResponse.data || !presignedResponse.data.uploadURL || !presignedResponse.data.uploadURL.url) {
+                console.error('Invalid response received from the backend', presignedResponse);
                 return;
               }
           
-              const { url, fields } = response.data;
-              var formData = new FormData();
-              for (let field in fields) {
-                formData.append(field, fields[field]);
-              }
+              const { url, fields } = presignedResponse.data.uploadURL;
+              const formData = new FormData();
           
-              let binaryString = atob(this.media.split(',')[1]);
-              let binaryLen = binaryString.length;
-              let bytes = new Uint8Array(binaryLen);
-              for (let i = 0; i < binaryLen; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
+              // Append the fields to the form data
+              Object.entries(fields).forEach(([key, value]) => {
+                formData.append(key, value);
+              });
+          
+              // Append the file (blob) to the form data
+              let binary = atob(this.media.split(',')[1]);
+              let array = [];
+              for (let i = 0; i < binary.length; i++) {
+                array.push(binary.charCodeAt(i));
               }
-              formData.append('file', new Blob([bytes], {type: 'video/mp4'}));
+              let blobData = new Blob([new Uint8Array(array)], { type: 'video/mp4' });
+              formData.append('file', blobData);
+          
+              // Use the pre-signed URL to upload the video file
+              const uploadResult = await axios.post(url, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
+          
+              console.log('Upload Result: ', uploadResult);
               
-              console.log('Format data: ', formData);
-          
-              const result = await axios.post(url, formData); // No headers needed, axios sets them for FormData.
-          
-              console.log('Upload result:', result);
-              if (result.status === 204 || result.status === 200) {
-                this.uploadURL = response.data.objectURL;
-                console.log('Upload successful');
+              // If the upload is successful, store the URL of the uploaded object
+              if (uploadResult.status === 200) {
+                this.uploadURL = presignedResponse.data.objectURL;
+                console.log('Upload successful. Object URL:', this.uploadURL);
               } else {
-                console.error('Upload failed:', result);
+                console.error('Upload failed:', uploadResult);
               }
             } catch (error) {
               console.error('Error during upload:', error);
