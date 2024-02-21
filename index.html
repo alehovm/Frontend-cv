@@ -93,7 +93,7 @@
               console.log('Upload Result: ', uploadResult);
               
               // If the upload is successful, store the URL of the uploaded object
-              if (uploadResult.status === 200) {
+              if (uploadResult.status === 200 || uploadResult.status === 204) {
                 this.uploadURL = presignedResponse.data.objectURL;
                 console.log('Upload successful. Object URL:', this.uploadURL);
               } else {
