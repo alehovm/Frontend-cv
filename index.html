@@ -92,9 +92,6 @@
           
               // Post the form data to the S3 presigned POST URL
               const result = await axios.post(url, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data'
-                }
               });
           
               console.log('Upload result:', result);
