@@ -69,7 +69,7 @@
                 return;
               }
           
-              const { url, fields } = response.data.uploadURL;
+              const { url, fields } = response.data;
               var formData = new FormData();
               for (let field in fields) {
                 formData.append(field, fields[field]);

@@ -4,7 +4,7 @@ import random
 import os
 
 # Change this value to adjust the signed URL's expiration
-URL_EXPIRATION_SECONDS = 300
+URL_EXPIRATION_SECONDS = 3000
 
 # Main Lambda entry point
 def lambda_handler(event, context):
