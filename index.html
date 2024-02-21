@@ -88,11 +88,7 @@
               formData.append('file', blobData);
           
               // Use the pre-signed URL to upload the video file
-              const uploadResult = await axios.post(url, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data'
-                }
-              });
+              const uploadResult = await axios.post(url, formData);
           
               console.log('Upload Result: ', uploadResult);
               
