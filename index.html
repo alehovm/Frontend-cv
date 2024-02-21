@@ -62,7 +62,10 @@
             try {
               // Call the backend to get the pre-signed URL and fields
               const presignedResponse = await axios.get(API_ENDPOINT);
-              console.log('Presigned Response: ', presignedResponse.data);
+              console.log('Presigned Response data: ', presignedResponse.data);
+              console.log('Presigned Response: ', presignedResponse);
+              console.log('Presigned Response data uploadUrl: ', presignedResponse.data.UploadURL);
+              console.log('Presigned Response data uploadUrl url: ', presignedResponse.data.UploadURL.url);
               
               // Check if the presignedResponse has the expected properties
               if (!presignedResponse.data || !presignedResponse.data.uploadURL || !presignedResponse.data.uploadURL.url) {
