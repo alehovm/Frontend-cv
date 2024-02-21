@@ -2,9 +2,9 @@
 <html>
   <head>
     <title>Upload file to S3</title>
-    <!-- Include Vue.js from CDN -->
+    <!-- Include Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <!-- Include Axios from CDN -->
+    <!-- Include Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
   <body>
@@ -64,12 +64,7 @@
             try {
               // Call the backend to get the pre-signed URL and fields
               const presignedResponse = await axios.get(API_ENDPOINT);
-              const data = JSON.parse(presignedResponse.data); // Use JSON.parse here if needed
-              console.log(data);  
-              console.log('Presigned Response data: ', presignedResponse.data);
-              console.log('Presigned Response: ', presignedResponse);
-              console.log('Presigned Response data uploadUrl: ', presignedResponse.data.uploadURL);
-              console.log('Presigned Response data uploadUrl url: ', presignedResponse.data.uploadURL.url);
+              console.log('Presigned Response: ', presignedResponse.data);
               
               // Check if the presignedResponse has the expected properties
               if (!presignedResponse.data || !presignedResponse.data.uploadURL || !presignedResponse.data.uploadURL.url) {
