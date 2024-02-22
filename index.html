@@ -21,6 +21,10 @@
         <button v-if="!uploadURL" @click="uploadMedia">Upload media</button>
       </div>
       <h2 v-if="uploadURL">Success! Media uploaded to bucket.</h2>
+      <div v-if="qrCodeURL">
+        <h2>QR Code:</h2>
+        <img :src="qrCodeURL" alt="QR Code">
+      </div>
     </div>
   
     <script>
@@ -34,7 +38,8 @@
         el: "#app",
         data: {
           media: '',
-          uploadURL: ''
+          uploadURL: '',
+          qrCodeURL: ''
         },
         methods: {
           onFileChange(e) {
@@ -68,8 +73,8 @@
               // Do something with the QR code URL, e.g., display it or store it
               if (qrCodeResponse.data.qr_code_url) {
                 // You might want to add a new data property to store the QR code URL
-                const qrCodeUrl = qrCodeData.qr_code_url;
-                console.log('QR Code URL:', qrCodeUrl); // Log the QR code URL
+                this.qrCodeURL = qrCodeData.qr_code_url;
+                console.log('QR Code URL:', this.qrCodeUrl); // Log the QR code URL
               }
             } catch (error) {
               console.error('Error generating QR code:', error);
