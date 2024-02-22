@@ -59,6 +59,22 @@
             console.log('Remove clicked')
             this.media = ''
           },
+          async generateQRCode(videoUrl) {
+            try {
+              const qrCodeEndpoint = 'https://tr6grf05gc.execute-api.eu-north-1.amazonaws.com/qrCodeGenerator'; // Replace with your actual endpoint
+              const qrCodeResponse = await axios.post(qrCodeEndpoint, { url: videoUrl });
+              const qrCodeData = qrCodeResponse.data;
+              console.log('QR Code Data:', qrCodeData); // Log the entire QR code data
+              // Do something with the QR code URL, e.g., display it or store it
+              if (qrCodeResponse.data.qr_code_url) {
+                // You might want to add a new data property to store the QR code URL
+                const qrCodeUrl = qrCodeData.qr_code_url;
+                console.log('QR Code URL:', qrCodeUrl); // Log the QR code URL
+              }
+            } catch (error) {
+              console.error('Error generating QR code:', error);
+            }
+          },
           async uploadMedia() {
             console.log('Upload clicked');
             try {
@@ -97,6 +113,8 @@
               if (uploadResult.status === 200 || uploadResult.status === 204) {
                 this.uploadURL = presignedResponse.data.objectURL;
                 console.log('Upload successful. Object URL:', this.uploadURL);
+                // Now call the generateQRCode method
+                await this.generateQRCode(this.uploadURL);
               } else {
                 console.error('Upload failed:', uploadResult);
               }
