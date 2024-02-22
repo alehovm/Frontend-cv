@@ -6,7 +6,6 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <!-- Include Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <img :src="logoImage" alt="Logo" />
   </head>
   <body>
     <div id="app">
@@ -29,19 +28,6 @@
     </div>
   
     <script>
-
-      import logoImage from'/assets/Sopra_Steria_logo.png'; // importer Sopra logo
-
-const logoImageRef = ref(logoImage);
-    
-    export default {
-  name: 'HeaderComponent',
-  data() {
-    return {
-      logoImage // this makes the imported image available in the template
-    };
-  }
-};
       const MAX_MEDIA_SIZE = 3 * 1024 * 1024 * 1024;
 
       /* ENTER YOUR ENDPOINT HERE */
@@ -158,22 +144,13 @@ const logoImageRef = ref(logoImage);
       })
     </script>
     <style type="text/css">
-       header {
-        display: flex;
-      align-items: center;
-     /* other styles */
-     }
-      header img {
-    height: 50px; /* for example, set the height of the logo */
-  /* other styles */
-     }
       body {
-        background: #fff;
+        background: #20262E;
         padding: 20px;
         font-family: sans-serif;
       }
       #app {
-        background: #fff #20262E;
+        background: #fff;
         border-radius: 4px;
         padding: 20px;
         transition: all 0.2s;
