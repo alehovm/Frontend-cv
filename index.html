@@ -58,7 +58,7 @@
       <h1>2S Digital Cv - Video opplastning</h1>
   
       <div v-if="!media">
-        <h2>Velg en videofil</h2>
+        <h2>Last opp en videofil</h2>
         <input type="file" @change="onFileChange" accept="video/*" class="fil">
       </div>
       <div v-else>
@@ -66,7 +66,7 @@
         <button v-if="!uploadURL" @click="removeMedia">Fjern video</button>
         <button v-if="!uploadURL" @click="uploadMedia">Last opp video</button>
       </div>
-      <h2 v-if="uploadURL">Success! Media uploaded to bucket.</h2>
+      <h2 v-if="uploadURL">Suksess! Media lastet opp til bucket.</h2>
       <div v-if="qrCodeURL">
         <h2>QR Code:</h2>
         <img :src="qrCodeURL" alt="QR Code" class="qr-code"> 
