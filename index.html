@@ -9,9 +9,8 @@
     <style type="text/css">
       /* Your existing styles for other elements... */
       header {
-        height: 5px; /* Height of the black line */
-  width: 100%;
-  margin: 0;
+      margin-bottom: 20px; /* Space between header and content */
+      height: 20px;
       box-shadow: 0 4px 8px 0 rgba(86, 86, 86, 0.2);
     }
     .logo {
@@ -43,11 +42,11 @@
      
     </style>
  
-  </head>
   <body>
    <header>
       <img src="assets/Sopra_Steria_logo.png" alt="Logo" class="logo">
     </header>
+  </head>
 
     <div id="app">
       <h1>2S Digital Cv - Video opplastning</h1>
@@ -185,10 +184,14 @@
       })
     </script>
     <style type="text/css">
-      body {
-        background: #fff;
-        font-family: sans-serif;
+
+    html, body {
+       margin: 0;
+       padding: 0;
+       background: #fff;
+      font-family: sans-serif;
       }
+     
       #app {
         width: 80%;
         background: #EDE9F2;
@@ -196,7 +199,9 @@
         border-radius: 4px;
         transition: all 0.2s;
         text-align: center;
-        margin: 0 auto;
+        margin: 20px auto; /* Adds 20px margin to the top and bottom, centers horizontally */
+  padding: 20px 0; /* Adds padding to the top and bottom of the content area */
+
       }
       h2 {
         color: #181818;
