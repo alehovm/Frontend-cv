@@ -40,6 +40,10 @@
       button:hover {
         background-color: #202020; /* Darker green background on hover */
       }
+      .fil {
+        max-width: 200px; /* Set the maximum width you want for your QR code */
+  height: auto; /* This will maintain the aspect ratio */
+      }
     
      
     </style>
@@ -55,7 +59,7 @@
   
       <div v-if="!media">
         <h2>Velg en videofil</h2>
-        <input type="file" @change="onFileChange" accept="video/*">
+        <input type="file" @change="onFileChange" accept="video/*" class="fil">
       </div>
       <div v-else>
         <video :src="media" controls></video>
