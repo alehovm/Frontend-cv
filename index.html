@@ -64,13 +64,14 @@
       <h2 v-if="uploadURL">Success! Media uploaded to bucket.</h2>
       <div v-if="qrCodeURL">
         <h2>QR Code:</h2>
-        <img :src="qrCodeURL" alt="QR Code">
+        <img :src="qrCodeURL" alt="QR Code" class="qr-code"> 
+        
       </div>
     </div>
   
     <script>
       const MAX_MEDIA_SIZE = 3 * 1024 * 1024 * 1024;
-
+/* Satt inn class="qr-code" */
       /* ENTER YOUR ENDPOINT HERE */
 
       const API_ENDPOINT = 'https://tr6grf05gc.execute-api.eu-north-1.amazonaws.com/uploads';
@@ -220,6 +221,10 @@
         display: block;
         margin-bottom: 10px;
       }
+      .qr-code {
+  max-width: 200px; /* Set the maximum width you want for your QR code */
+  height: auto; /* This will maintain the aspect ratio */
+}
     </style>
   </body>
 </html>
