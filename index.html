@@ -33,6 +33,7 @@
         cursor: pointer; /* Cursor to indicate it's clickable */
         border-radius: 6px; /* Rounded corners */
         box-shadow: 0 4px 8px 0 rgba(36, 36, 36, 0.2);
+        margin: 4px 10px; 
       }
     
       /* Button hover effect */
@@ -58,8 +59,8 @@
       </div>
       <div v-else>
         <video :src="media" controls></video>
-        <button v-if="!uploadURL" @click="removeMedia">Remove media</button>
-        <button v-if="!uploadURL" @click="uploadMedia">Upload media</button>
+        <button v-if="!uploadURL" @click="removeMedia">Fjern video</button>
+        <button v-if="!uploadURL" @click="uploadMedia">Last opp video</button>
       </div>
       <h2 v-if="uploadURL">Success! Media uploaded to bucket.</h2>
       <div v-if="qrCodeURL">
