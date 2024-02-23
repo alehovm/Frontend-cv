@@ -8,7 +8,18 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style type="text/css">
       /* Your existing styles for other elements... */
-    
+      header {
+      padding: 10px 0; /* Adjust padding as needed */
+      border-bottom: 2px solid black; /* Black line at the bottom */
+      margin-bottom: 20px; /* Space between header and content */
+    }
+    .logo {
+      display: block; /* Makes img a block element to allow margin settings */
+      margin-left: auto; /* Aligns logo to the left */
+      margin-right: auto; /* Aligns logo to the right */
+      width: 150px; /* Your logo width */
+      height: auto; /* Maintain aspect ratio */
+    }
       /* Add your button styles here */
       button {
         background-color: #000000; /* Green background */
@@ -33,6 +44,9 @@
     </style>
   </head>
   <body>
+    <header>
+      <img src="assets/Sopra_Steria_logo.png" alt="Logo" class="logo">
+    </header>
     <div id="app">
       <h1>2S Digital Cv - Video opplastning</h1>
   
