@@ -67,16 +67,17 @@
         <button v-if="!uploadURL" @click="removeMedia">Fjern video</button>
         <button v-if="!uploadURL" @click="uploadMedia">Last opp video</button>
       </div>
-      <div v-if="qrCodeURL">
-        <h2>QR-kode:</h2>
-        <img :src="qrCodeURL" alt="QR Code" class="qr-code">
-        <button @click="goBackToMainPage">Tilbake til hovedsiden</button> <!-- New Button -->
-      </div>
+    
       <h2 v-if="uploadURL">Suksess! Videoopplasting fullført.</h2>
       <div v-if="qrCodeURL">
         <h2>QR-kode:</h2>
         <img :src="qrCodeURL" alt="QR Code" class="qr-code"> 
         
+      </div>  
+      <div v-if="qrCodeURL">
+        <h2>QR-kode:</h2>
+        <img :src="qrCodeURL" alt="QR Code" class="qr-code">
+        <button @click="goBackToMainPage">Tilbake til hovedsiden</button> <!-- New Button -->
       </div>
     </div>
   
