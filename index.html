@@ -68,8 +68,8 @@
             <label for="file-upload" class="custom-file-upload">
               Velg fil
             </label>
-            <input id="file-upload" type="file" @change="onFileChange" accept="video/*" style="display: none;">
             <span id="file-chosen">Ingen fil valgt</span>
+            <input id="file-upload" type="file" @change="onFileChange" accept="video/*" style="display: none;">
           </div>
         </div>
       </div>
@@ -253,7 +253,8 @@ async uploadMedia() {
         
       }
       #file-chosen {
-  margin-top: 10px; /* Space between the input and the text */
+  /* Adjust padding and margins as needed */
+  margin-left: 10px; /* Add space between the button and the text */
 }
      
 .file-upload-container {
@@ -264,10 +265,11 @@ async uploadMedia() {
 
 .custom-file-upload {
   border: 1px solid #ccc;
-  display: inline-block;
   padding: 6px 12px;
   cursor: pointer;
-  margin-bottom: 10px; /* Space between the label and the text */
+  /* Align text to be in line with the button */
+  line-height: normal;
+  /* Adjust margins as needed */
 }
       
       video {
