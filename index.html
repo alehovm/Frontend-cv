@@ -56,29 +56,28 @@
      <h1>2S Digital Cv - Video opplastning</h1>
   </head>
 
-    <div id="app">
-     
-  
+  <div id="app">
+    <div v-if="!videoUploaded">
       <div v-if="!media">
         <h2>Last opp en videofil</h2>
         <input type="file" @change="onFileChange" accept="video/*" class="fil">
       </div>
       <div v-else>
         <video :src="media" controls></video>
-        <button v-if="!uploadURL" @click="removeMedia">Fjern video</button>
-        <button v-if="!uploadURL" @click="uploadMedia">Last opp video</button>
-      </div>
-    
-      <div v-else>
-        <!-- This div will replace the video once the upload is completed -->
-        <h2 v-if="uploadURL">Suksess! Videoopplasting fullført.</h2>
-        <div v-if="qrCodeURL">
-          <h2>QR-kode:</h2>
-          <img :src="qrCodeURL" alt="QR Code" class="qr-code">
-          <button @click="goBackToMainPage">Tilbake til hovedsiden</button>
-          </div>
+        <button @click="removeMedia">Fjern video</button>
+        <button @click="uploadMedia">Last opp video</button>
       </div>
     </div>
+    <div v-else>
+      <h2>Suksess! Videoopplasting fullført.</h2>
+      <div v-if="qrCodeURL">
+        <h2>QR-kode:</h2>
+        <img :src="qrCodeURL" alt="QR Code" class="qr-code">
+        <button @click="goBackToMainPage">Tilbake til hovedsiden</button>
+      </div>
+    </div>
+  </div>
+  
     
   
     <script>
@@ -138,79 +137,62 @@
           goBackToMainPage() {
           window.location.href = '/'; // Change this URL to your main page URL
         },
-        async uploadMedia() {
-      // ... existing upload logic ...
-      if (uploadResult.status === 200 || uploadResult.status === 204) {
-        this.uploadURL = presignedResponse.data.objectURL;
-        console.log('Upload successful. Object URL:', this.uploadURL);
-        this.videoUploaded = true; // Set the flag to true when the video is uploaded
-        // Now call the generateQRCode method
-        await this.generateQRCode(this.uploadURL);
-      } else {
-        console.error('Upload failed:', uploadResult);
-      }
-    },
-          async uploadMedia() {
-            console.log('Upload clicked');
-            try {
-              const presignedResponse = await axios.get(API_ENDPOINT);
-              console.log('Presigned Response: ', presignedResponse);
-          
-              // Check if the presignedResponse has the expected properties
-              if (!presignedResponse.data || !presignedResponse.data.uploadURL || !presignedResponse.data.uploadURL.url) {
-                console.error('Invalid response received from the backend', presignedResponse);
-                return;
-              }
-          
-              const { url, fields } = presignedResponse.data.uploadURL;
-              const formData = new FormData();
-          
-              // Append the fields to the form data
-              Object.entries(fields).forEach(([key, value]) => {
-                formData.append(key, value);
-              });
-          
-              // Append the file (blob) to the form data
-              let binary = atob(this.media.split(',')[1]);
-              let array = [];
-              for (let i = 0; i < binary.length; i++) {
-                array.push(binary.charCodeAt(i));
-              }
-              let blobData = new Blob([new Uint8Array(array)], { type: 'video/mp4' });
-              formData.append('file', blobData);
-          
-              // Use the pre-signed URL to upload the video file
-              const uploadResult = await axios.post(url, formData);
-          
-              console.log('Upload Result: ', uploadResult);
-          
-              // If the upload is successful, store the URL of the uploaded object
-              if (uploadResult.status === 200 || uploadResult.status === 204) {
-                this.uploadURL = presignedResponse.data.objectURL;
-                console.log('Upload successful. Object URL:', this.uploadURL);
-                // Now call the generateQRCode method
-                await this.generateQRCode(this.uploadURL);
-              } else {
-                console.error('Upload failed:', uploadResult);
-              }
-            } catch (error) {
-              console.error('Error during upload:', error);
-              if (error.response) {
-                // Log more details about the HTTP response
-                console.error('Response data:', error.response.data);
-                console.error('Response status:', error.response.status);
-                console.error('Response headers:', error.response.headers);
-              } else if (error.request) {
-                // The request was made but no response was received
-                console.error('Request made, no response:', error.request);
-              } else {
-                // Something happened in setting up the request that triggered an Error
-                console.error('Error message:', error.message);
-              }
-            }
-          }
+      
+      // ... other methods ...
 
-        }
+async uploadMedia() {
+  console.log('Upload clicked');
+  try {
+    const presignedResponse = await axios.get(API_ENDPOINT);
+    console.log('Presigned Response: ', presignedResponse);
+    
+    // Check if the presignedResponse has the expected properties
+    if (!presignedResponse.data || !presignedResponse.data.uploadURL || !presignedResponse.data.uploadURL.url) {
+      console.error('Invalid response received from the backend', presignedResponse);
+      return;
+    }
+    
+    const { url, fields } = presignedResponse.data.uploadURL;
+    const formData = new FormData();
+    
+    // Append the fields to the form data
+    Object.entries(fields).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    
+    // Append the file (blob) to the form data
+    let binary = atob(this.media.split(',')[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    let blobData = new Blob([new Uint8Array(array)], { type: 'video/mp4' });
+    formData.append('file', blobData);
+    
+    // Use the pre-signed URL to upload the video file
+    const uploadResult = await axios.post(url, formData);
+    
+    console.log('Upload Result: ', uploadResult);
+    
+    // If the upload is successful, store the URL of the uploaded object
+    if (uploadResult.status === 200 || uploadResult.status === 204) {
+      this.uploadURL = presignedResponse.data.objectURL;
+      console.log('Upload successful. Object URL:', this.uploadURL);
+      this.videoUploaded = true; // Set the flag to true when the video is uploaded
+      // Now call the generateQRCode method
+      await this.generateQRCode(this.uploadURL);
+    } else {
+      console.error('Upload failed:', uploadResult);
+    }
+  } catch (error) {
+    console.error('Error during upload:', error);
+    // Handle errors here...
+  }}
+},
+
+// ... rest of your methods ...
+
+     
       })
     </script>
     <style type="text/css">
