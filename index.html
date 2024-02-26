@@ -75,11 +75,11 @@
         
       </div>  
       <div v-if="qrCodeURL">
-        <h2>QR-kode:</h2>
-        <img :src="qrCodeURL" alt="QR Code" class="qr-code">
+       
         <button @click="goBackToMainPage">Tilbake til hovedsiden</button> <!-- New Button -->
       </div>
     </div>
+    
   
     <script>
       const MAX_MEDIA_SIZE = 3 * 1024 * 1024 * 1024;
