@@ -45,6 +45,7 @@
         max-width: 200px; /* Set the maximum width you want for your QR code */
   height: auto; /* This will maintain the aspect ratio */
       }
+  
     
      
     </style>
@@ -70,7 +71,7 @@
     </div>
     <div v-else>
       <h2>Suksess! Videoopplasting fullført.</h2>
-      <div v-if="qrCodeURL">
+      <div v-if="qrCodeURL" class="centered-container">
         <h2>QR-kode:</h2>
         <img :src="qrCodeURL" alt="QR Code" class="qr-code">
         <button @click="goBackToMainPage">Tilbake til hovedsiden</button>
@@ -196,6 +197,20 @@ async uploadMedia() {
       })
     </script>
     <style type="text/css">
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.qr-code {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 20px; /* Add some space above the button */
+}
 
     html, body {
        margin: 0;
