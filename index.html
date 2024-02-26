@@ -69,15 +69,14 @@
         <button v-if="!uploadURL" @click="uploadMedia">Last opp video</button>
       </div>
     
-      <h2 v-if="uploadURL">Suksess! Videoopplasting fullført.</h2>
-      <div v-if="qrCodeURL">
-        <h2>QR-kode:</h2>
-        <img :src="qrCodeURL" alt="QR Code" class="qr-code"> 
-        
-      </div>  
-      <div v-if="qrCodeURL">
-       
-        <button @click="goBackToMainPage">Tilbake til hovedsiden</button> <!-- New Button -->
+      <div v-else>
+        <!-- This div will replace the video once the upload is completed -->
+        <h2 v-if="uploadURL">Suksess! Videoopplasting fullført.</h2>
+        <div v-if="qrCodeURL">
+          <h2>QR-kode:</h2>
+          <img :src="qrCodeURL" alt="QR Code" class="qr-code">
+          <button @click="goBackToMainPage">Tilbake til hovedsiden</button>
+          </div>
       </div>
     </div>
     
@@ -94,7 +93,8 @@
         data: {
           media: '',
           uploadURL: '',
-          qrCodeURL: ''
+          qrCodeURL: '',
+          videoUploaded: false // New data property to track if the video has been uploaded
         },
         methods: {
           onFileChange(e) {
@@ -138,6 +138,18 @@
           goBackToMainPage() {
           window.location.href = '/'; // Change this URL to your main page URL
         },
+        async uploadMedia() {
+      // ... existing upload logic ...
+      if (uploadResult.status === 200 || uploadResult.status === 204) {
+        this.uploadURL = presignedResponse.data.objectURL;
+        console.log('Upload successful. Object URL:', this.uploadURL);
+        this.videoUploaded = true; // Set the flag to true when the video is uploaded
+        // Now call the generateQRCode method
+        await this.generateQRCode(this.uploadURL);
+      } else {
+        console.error('Upload failed:', uploadResult);
+      }
+    },
           async uploadMedia() {
             console.log('Upload clicked');
             try {
