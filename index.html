@@ -61,7 +61,17 @@
     <div v-if="!videoUploaded">
       <div v-if="!media">
         <h2>Last opp en videofil</h2>
-        <input type="file" @change="onFileChange" accept="video/*" class="fil">
+
+        <div class="centered-container">
+          <h2>Last opp en videofil</h2>
+          <div class="file-upload-container">
+            <label for="file-upload" class="custom-file-upload">
+              Velg fil
+            </label>
+            <input id="file-upload" type="file" @change="onFileChange" accept="video/*" style="display: none;">
+            <span id="file-chosen">Ingen fil valgt</span>
+          </div>
+        </div>
       </div>
       <div v-else>
         <video :src="media" controls></video>
@@ -240,9 +250,25 @@ async uploadMedia() {
         color: #181818;
         margin-bottom: 15px;
         font-weight: var(--amplify-font-weights-thin);
-        text-align: center;
+        
       }
+      #file-chosen {
+  margin-top: 10px; /* Space between the input and the text */
+}
      
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-bottom: 10px; /* Space between the label and the text */
+}
       
       video {
         width: 50%;
