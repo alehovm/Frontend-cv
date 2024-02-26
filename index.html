@@ -67,6 +67,11 @@
         <button v-if="!uploadURL" @click="removeMedia">Fjern video</button>
         <button v-if="!uploadURL" @click="uploadMedia">Last opp video</button>
       </div>
+      <div v-if="qrCodeURL">
+        <h2>QR-kode:</h2>
+        <img :src="qrCodeURL" alt="QR Code" class="qr-code">
+        <button @click="goBackToMainPage">Tilbake til hovedsiden</button> <!-- New Button -->
+      </div>
       <h2 v-if="uploadURL">Suksess! Videoopplasting fullført.</h2>
       <div v-if="qrCodeURL">
         <h2>QR-kode:</h2>
@@ -128,6 +133,9 @@
               console.error('Error generating QR code:', error);
             }
           },
+          goBackToMainPage() {
+          window.location.href = '/'; // Change this URL to your main page URL
+        },
           async uploadMedia() {
             console.log('Upload clicked');
             try {
@@ -207,7 +215,7 @@
         border-radius: 4px;
         transition: all 0.2s;
         text-align: center;
-        margin: 15px auto; /* Adds 20px margin to the top and bottom, centers horizontally */
+        margin: 20px auto; /* Adds 20px margin to the top and bottom, centers horizontally */
   padding: 20px 0; /* Adds padding to the top and bottom of the content area */
 
       }
